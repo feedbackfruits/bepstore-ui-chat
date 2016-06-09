@@ -11,7 +11,7 @@ var options = {
     lcovOptions: {
       outputFile: 'lcov.info',
       renamer: function(moduleName) {
-        var expression = /^bepstore-github/;
+        var expression = /^bepstore-chat/;
         return moduleName.replace(expression, 'app') + '.js';
       }
     },
