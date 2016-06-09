@@ -19,6 +19,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "bepstore-user": "feedbackfruits/bepstore-ui-user",
     "broccoli-asset-rev": "^2.4.2",
     "codecov": "^1.0.1",
     "ember-ajax": "0.7.1",
