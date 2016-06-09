@@ -2,5 +2,9 @@
 'use strict';
 
 module.exports = {
-  name: 'bepstore-ui-chat'
+  name: 'bepstore-chat',
+
+  isDevelopingAddon: function() {
+    return true;
+  }
 };
