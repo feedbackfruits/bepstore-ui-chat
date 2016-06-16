@@ -1,4 +1,6 @@
 # Bepstore-ui-chat
+[![codecov](https://codecov.io/gh/feedbackfruits/bepstore-ui-chat/branch/master/graph/badge.svg)](https://codecov.io/gh/feedbackfruits/bepstore-ui-chat)
+[![Code Climate](https://codeclimate.com/github/feedbackfruits/bepstore-ui-chat/badges/gpa.svg)](https://codeclimate.com/github/feedbackfruits/bepstore-ui-chat)
 
 This README outlines the details of collaborating on this Ember addon.
 
