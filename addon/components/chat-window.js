@@ -1,17 +1,34 @@
 import Ember from 'ember';
 import layout from 'bepstore-chat/templates/components/chat-window';
 
-const { Component, inject: { service } } = Ember;
+const { Component, computed, observer, inject: { service } } = Ember;
 
 export default Component.extend({
   layout,
   classNames: 'chat-window',
+  classNameBindings: ['isHidden:hidden'],
   session: service(),
 
   openChat: false,
   windowSize: 'chat-closed',
-  contentChat: true,
+  contentChat: false,
   messages: [],
+
+  isHidden: computed('session.user', function(){
+    if(this.get('session.user.id')){
+      return false;
+    }
+    return true;
+  }),
+
+  resetHidden: observer('session.user', function(){
+      if(this.get('session.user.id')){
+        this.set('isHidden', false);
+      }
+      else {
+        this.set('isHidden', true);
+      }
+    }),
 
   actions: {
     toggle: function() {
@@ -30,7 +47,14 @@ export default Component.extend({
       else {
         this.get('messages').addObject({userid:this.get('session.user.id'), body: [{id:1,content:message}]});
       }
+    },
+    toRooms: function(){
+
+    },
+    toLast: function(){
+
     }
+
 
   }
 });
