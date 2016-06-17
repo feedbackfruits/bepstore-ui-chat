@@ -40,21 +40,6 @@ export default Component.extend({
       }
     },
     sendMessage: function(message) {
-<<<<<<< 5caac1de97b6c21173f3f557ca7aa4ed3d4301c0
-      if(this.get('messages.lastObject.userid') === this.get('session.user.id')){
-        let messages = this.get('messages.lastObject.body');
-        messages.addObject({id:messages.length, content: message});
-      }
-      else {
-        this.get('messages').addObject({userid:this.get('session.user.id'), body: [{id:1,content:message}]});
-      }
-    },
-    toRooms: function(){
-
-    },
-    toLast: function(){
-
-=======
       let accessToken = this.get('session.data.authenticated.access_token');
       let host = this.get('account.host');
       let roomId = "57154bb3187bb6f0eae0136d";
@@ -75,7 +60,6 @@ export default Component.extend({
       }).then((response) => {
         return this.get('store').createRecord('chat-message', response);
       });
->>>>>>> Add chat via gitter
     }
 
 
