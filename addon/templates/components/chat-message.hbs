@@ -1,8 +1,4 @@
-{{component 'bepstore-user@picture/chat-pic' userid=message.userid}}
+{{component 'bepstore-chat@chat-user-picture' model=message.fromUser}}
 <div class="bubble">
-{{#each message.body as |message|}}
-  <div class="line">
-    {{message.content}}
-  </div>
-{{/each}}
+  {{message.text}}
 </div>
