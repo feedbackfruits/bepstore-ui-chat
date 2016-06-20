@@ -8,11 +8,11 @@ export default Component.extend({
   classNames: 'chat-window',
   classNameBindings: ['isHidden:hidden'],
   session: service(),
+  account: service(),
+  ajax: service(),
 
   openChat: false,
   windowSize: 'chat-closed',
-  contentChat: false,
-  messages: [],
 
   isHidden: computed('session.user', function(){
     if(this.get('session.user.id')){
@@ -40,19 +40,26 @@ export default Component.extend({
       }
     },
     sendMessage: function(message) {
-      if(this.get('messages.lastObject.userid') === this.get('session.user.id')){
-        let messages = this.get('messages.lastObject.body');
-        messages.addObject({id:messages.length, content: message});
-      }
-      else {
-        this.get('messages').addObject({userid:this.get('session.user.id'), body: [{id:1,content:message}]});
-      }
-    },
-    toRooms: function(){
+      let accessToken = this.get('session.data.authenticated.access_token');
+      let host = this.get('account.host');
+      let roomId = "57154bb3187bb6f0eae0136d";
+      let url = `${host}/provide/gitter/rooms/${roomId}/chatMessages`;
 
-    },
-    toLast: function(){
-
+      return this.get('ajax').request(url, {
+        type: 'POST',
+        data: JSON.stringify({ text: message }),
+        dataType: 'json',
+        xhrFields: {
+          withCredentials: true
+        },
+        crossDomain: true,
+        headers: {
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${accessToken}`
+       }
+      }).then((response) => {
+        return this.get('store').createRecord('chat-message', response);
+      });
     }
 
 
