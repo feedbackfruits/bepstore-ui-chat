@@ -2,36 +2,44 @@
 <div class="{{windowSize}}">
   <div class="chat-top-bar">
     {{#unless openChat}}
-    <div class="chat-small"  {{action 'toggle'}}>
-      Open Chat
-    </div>
+      <div class="chat-small"  {{action 'toggle'}}>
+        Open Chat
+      </div>
     {{else}}
-    {{#if contentChat}}
-    {{receiver}}
-    <div class="clickables">
-      <i class="material-icons" {{action 'toRooms'}}>expand_more</i>
-      <i class="material-icons" {{action 'toggle'}}>close</i>
-    </div>
-    {{else}}
-    All rooms
-    <div class="clickables">
-      <i class="material-icons" {{action 'toLast'}}>expand_less</i>
-      <i class="material-icons" {{action 'toggle'}}>close</i>
-    </div>
-    {{/if}}
+      {{#if hasGitter}}
+        {{#if contentChat}}
+          {{receiver}}
+          <div class="clickables">
+            <i class="material-icons" {{action 'toRooms'}}>expand_more</i>
+            <i class="material-icons" {{action 'toggle'}}>close</i>
+          </div>
+        {{else}}
+          All rooms
+          <div class="clickables">
+            <i class="material-icons" {{action 'toLast'}}>expand_less</i>
+            <i class="material-icons" {{action 'toggle'}}>close</i>
+          </div>
+        {{/if}}
+      {{else}}
+        You have not linked you Gitter
+      {{/if}}
     {{/unless}}
   </div>
   {{#if openChat}}
   <div class="chat-window-content">
-    {{#if contentChat}}
-    <div class="chat-conversation">
-      {{#each messages as |message index|}}
-      {{component 'bepstore-chat@chat-message' message=message}}
-      {{/each}}
-    </div>
-    {{component 'bepstore-chat@chat-textfield' sendMessage=(action 'sendMessage')}}
-    {{else}}
+    {{#if hasGitter}}
+      {{#if contentChat}}
+      <div class="chat-conversation">
+        {{#each messages as |message index|}}
+        {{component 'bepstore-chat@chat-message' message=message}}
+        {{/each}}
+      </div>
+      {{component 'bepstore-chat@chat-textfield' sendMessage=(action 'sendMessage')}}
+      {{else}}
 
+      {{/if}}
+    {{else}}
+      {{link-provider-button provider='gitter'}}
     {{/if}}
   </div>
   {{/if}}
