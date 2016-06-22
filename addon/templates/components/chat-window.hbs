@@ -7,8 +7,8 @@
       </div>
     {{else}}
       {{#if hasGitter}}
-        {{#if contentChat}}
-          {{receiver}}
+        {{#if room}}
+          {{room.name}}
           <div class="clickables">
             <i class="material-icons" {{action 'toRooms'}}>expand_more</i>
             <i class="material-icons" {{action 'toggle'}}>close</i>
@@ -28,15 +28,19 @@
   {{#if openChat}}
   <div class="chat-window-content">
     {{#if hasGitter}}
-      {{#if contentChat}}
-      <div class="chat-conversation">
-        {{#each messages as |message index|}}
-        {{component 'bepstore-chat@chat-message' message=message}}
-        {{/each}}
-      </div>
-      {{component 'bepstore-chat@chat-textfield' sendMessage=(action 'sendMessage')}}
+      {{#if room}}
+        <div class="chat-conversation">
+          {{#each messages as |message index|}}
+          {{component 'bepstore-chat@chat-message' message=message}}
+          {{/each}}
+        </div>
+        {{component 'bepstore-chat@chat-textfield' sendMessage=(action 'sendMessage')}}
       {{else}}
-
+        {{#each rooms as |room|}}
+          <div {{action 'toRoom' room.name}}>
+            <i class="material-icons">chat</i> {{room.name}}
+          </div>
+        {{/each}}
       {{/if}}
     {{else}}
       {{link-provider-button provider='gitter'}}

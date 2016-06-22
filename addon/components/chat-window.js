@@ -13,15 +13,9 @@ export default Component.extend({
   ajax: service(),
 
   openChat: false,
-  contentChat: true,
+  room: null,
   windowSize: 'chat-closed',
 
-  messages: computed('isHidden', 'hasGitter', function(){
-    if(this.get('hasGitter')){
-      return this.get('store').peekAll('chat-message');
-    }
-    return null;
-  }),
 
   isHidden: computed('session.user', function(){
     return !(this.get('session.user.id'));
@@ -29,6 +23,20 @@ export default Component.extend({
 
   hasGitter: computed('isHidden', 'account.me.identities.[]', function(){
     return !this.get('isHidden') && this.get('account').isAuthorized('gitter');
+  }),
+
+  rooms:computed('isHidden', 'hasGitter', function(){
+    if(this.get('hasGitter')){
+      return this.get('store').peekAll('chat-room');
+    }
+    return null;
+  }),
+
+  messages: computed('isHidden', 'hasGitter', 'room', function(){
+    if(this.get('hasGitter')){
+      return this.get('store').peekAll('chat-message').filterBy('room.id',this.get('room.id'));
+    }
+    return null;
   }),
 
   actions: {
@@ -43,7 +51,7 @@ export default Component.extend({
     sendMessage: function(message) {
       let accessToken = this.get('session.data.authenticated.access_token');
       let host = this.get('account.host');
-      let roomId = "57154bb3187bb6f0eae0136d";
+      let roomId = this.get('room.id');
       let url = `${host}/provide/gitter/rooms/${roomId}/chatMessages`;
 
       return this.get('ajax').request(url, {
@@ -63,12 +71,16 @@ export default Component.extend({
       });
     },
     toRooms: function(){
-      // set this to choose gitter of all repos
-      this.toggleProperty('contentChat');
+      this.set('last', this.get('room'));
+      this.set('room', null);
+    },
+    toRoom: function(roomName){
+      this.set('room', this.get('store').peekAll('chat-room').findBy('name', roomName));
     },
     toLast: function(){
-      // set this to last used repo
-      this.toggleProperty('contentChat');
+      if(this.get('last')){
+        this.set('room', this.get('last'));
+      }
     }
   }
 });
