@@ -50,6 +50,10 @@ export default Component.extend({
     return messages.filterBy('room.id', roomId).sortBy('sent');
   }),
 
+  scrollBottom: function() {
+    Ember.run.later((function() {Ember.$(".chat-conversation").scrollTop(Ember.$(".chat-conversation")[0].scrollHeight);}),0);
+  }.observes('messagesByRoom.@each'),
+
   actions: {
     toggle: function() {
       this.toggleProperty('openChat');
