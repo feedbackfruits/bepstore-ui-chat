@@ -25,18 +25,29 @@ export default Component.extend({
     return !this.get('isHidden') && this.get('account').isAuthorized('gitter');
   }),
 
-  rooms:computed('isHidden', 'hasGitter', function(){
+  rooms: computed('isHidden', 'hasGitter', function(){
     if(this.get('hasGitter')){
       return this.get('store').peekAll('chat-room');
     }
-    return null;
+    return [];
   }),
 
-  messages: computed('isHidden', 'hasGitter', 'room', function(){
-    if(this.get('hasGitter')){
-      return this.get('store').peekAll('chat-message').filterBy('room.id',this.get('room.id'));
+  repoRooms: computed('rooms.[]', function() {
+    let rooms = this.get('rooms');
+    return rooms.filterBy('githubType', 'REPO');
+  }),
+
+  messages: computed('isHidden', 'hasGitter', function(){
+    if(this.get('hasGitter') && this.get('room.id')){
+      return this.get('store').peekAll('chat-message');
     }
-    return null;
+    return [];
+  }),
+
+  messagesByRoom: computed('messages.[]', 'room', function() {
+    let messages = this.get('messages');
+    let roomId = this.get('room.id');
+    return messages.filterBy('room.id', roomId).sortBy('sent');
   }),
 
   actions: {
@@ -51,8 +62,8 @@ export default Component.extend({
     sendMessage: function(message) {
       let accessToken = this.get('session.data.authenticated.access_token');
       let host = this.get('account.host');
-      let roomId = this.get('room.id');
-      let url = `${host}/provide/gitter/rooms/${roomId}/chatMessages`;
+      let room = this.get('room');
+      let url = `${host}/provide/gitter/rooms/${room.id}/chatMessages`;
 
       return this.get('ajax').request(url, {
         type: 'POST',
@@ -67,7 +78,15 @@ export default Component.extend({
          'Authorization': `Bearer ${accessToken}`
        }
       }).then((response) => {
-        return this.get('store').createRecord('chat-message', response);
+        let store = this.get('store');
+        let record = store.peekRecord('chat-message', response.id);
+
+        if (record) {
+          return;
+        }
+
+        record = store.createRecord('chat-message', response);
+        record.set('room', room);
       });
     },
     toRooms: function(){
